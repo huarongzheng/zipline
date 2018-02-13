@@ -109,7 +109,7 @@ class TradingEnvironment(object):
 
         if engine is not None:
             AssetDBWriter(engine).init_db()
-            self.asset_finder = AssetFinder(
+            self.asset_finder = AssetFinder( #aggregate assets and provide methods to access them assets.py
                 engine,
                 future_chain_predicates=future_chain_predicates)
         else:

@@ -1,4 +1,4 @@
-import os
+mport os
 import re
 from runpy import run_path
 import sys
@@ -116,7 +116,7 @@ def _run(handle_data,
     if trading_calendar is None:
         trading_calendar = get_calendar('NYSE')
 
-    if bundle is not None:
+    if bundle is not None: #ronz bundle='quantopian-quandl'
         bundle_data = load(
             bundle,
             environ,
@@ -133,10 +133,10 @@ def _run(handle_data,
                 "invalid url %r, must begin with 'sqlite:///'" %
                 str(bundle_data.asset_finder.engine.url),
             )
-        env = TradingEnvironment(asset_db_path=connstr, environ=environ)
+        env = TradingEnvironment(asset_db_path=connstr, environ=environ) #ronz asset_db_path='/home/gqian/.zipline/data/quantopian-quandl/2017-09-22T11;56;54.022199/assets-6.sqlite'
         first_trading_day =\
-            bundle_data.equity_minute_bar_reader.first_trading_day
-        data = DataPortal(
+                bundle_data.equity_minute_bar_reader.first_trading_day #ronz Timestamp('1990-01-02 00:00:00+0000', tz='UTC')
+        data = DataPortal(  #ronz create DataPortal as the data container used all over the application   data_portal.py
             env.asset_finder,
             trading_calendar=trading_calendar,
             first_trading_day=first_trading_day,
@@ -145,7 +145,7 @@ def _run(handle_data,
             adjustment_reader=bundle_data.adjustment_reader,
         )
 
-        pipeline_loader = USEquityPricingLoader(
+        pipeline_loader = USEquityPricingLoader( #ronz pipeline loader engine for continuous future ?? cannot find much usage
             bundle_data.equity_daily_bar_reader,
             bundle_data.adjustment_reader,
         )
@@ -161,11 +161,11 @@ def _run(handle_data,
         choose_loader = None
 
     perf = TradingAlgorithm(
-        namespace=namespace,
-        env=env,
+        namespace=namespace,  #ronz input algofile has no namespace
+        env=env,         #ronz TradingEnvironment that includes, trading_calendar/load bm data/load input database engine/asset finder/asset writer
         get_pipeline_loader=choose_loader,
         trading_calendar=trading_calendar,
-        sim_params=create_simulation_parameters(
+        sim_params=create_simulation_parameters(   #ronz returns SimulationParameters obj that contains all simulation param
             start=start,
             end=end,
             capital_base=capital_base,
@@ -177,8 +177,8 @@ def _run(handle_data,
             'handle_data': handle_data,
             'before_trading_start': before_trading_start,
             'analyze': analyze,
-        } if algotext is None else {
-            'algo_filename': getattr(algofile, 'name', '<algorithm>'),
+        } if algotext is None else {#ronz go this branch, all these "api_methods" are got direct from algofilei->algotext now, hence above are passed down from cmdline->main->_run->here as NONE
+            'algo_filename': getattr(algofile, 'name', '<algorithm>'), #ronz 'buyapple.py' '<algorithm>' is default
             'script': algotext,
         }
     ).run(
@@ -198,6 +198,7 @@ def _run(handle_data,
 _loaded_extensions = set()
 
 
+#ronz useless method
 def load_extensions(default, extensions, strict, environ, reload=False):
     """Load all of the given extensions. This should be called by run_algo
     or the cli.
@@ -246,7 +247,7 @@ def load_extensions(default, extensions, strict, environ, reload=False):
         else:
             _loaded_extensions.add(ext)
 
-
+#ronz useless method
 def run_algorithm(start,
                   end,
                   initialize,

@@ -360,7 +360,7 @@ class TradingAlgorithm(object):
                 'before_trading_start',
                 'analyze',
             }
-            unexpected_api_methods = viewkeys(kwargs) & api_methods
+            unexpected_api_methods = viewkeys(kwargs) & api_methods  #ronz if algofile thus algoscript is provided, don't expect the 4 above methods being passed in otherwise exception
             if unexpected_api_methods:
                 raise ValueError(
                     "TradingAlgorithm received a script and the following API"
